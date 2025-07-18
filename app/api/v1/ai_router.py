@@ -24,7 +24,7 @@ async def query_ai(
 ):
     try:
         user_repo = UserRepository(db)
-        user = user_repo.get_by_id(request.user_id)
+        user = user_repo.get_by_id_and_session_id(request.user_id, request.session_id)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

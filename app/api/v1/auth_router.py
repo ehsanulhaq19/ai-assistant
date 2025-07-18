@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.repository import UserRepository
 from app.core.auth import verify_password, get_password_hash, create_access_token
-from app.schemas.user import UserRegisterRequest, UserLoginRequest, TokenResponse, UserResponse, LogoutResponse
+from app.schemas.user import UserRegisterRequest, UserLoginRequest, TokenResponse, UserResponse, LogoutResponse, PlanUpdateRequest, PlanUpdateResponse
 from app.models.user import User, PlanType
 from app.utils import generate_session_id
 from app.core.auth_dependencies import get_current_user
@@ -43,3 +43,31 @@ def logout_user(current_user: User = Depends(get_current_user), db: Session = De
     user_repo = UserRepository(db)
     user_repo.set_session_id(current_user.id, None)
     return LogoutResponse(message="Successfully logged out")
+
+@router.put("/update-plan", response_model=PlanUpdateResponse, summary="Update user plan", description="Update user plan to pro or expert. Authentication required.")
+def update_user_plan(
+    request: PlanUpdateRequest, 
+    current_user: User = Depends(get_current_user), 
+    db: Session = Depends(get_db)
+):
+    # Validate that only pro or expert plans are allowed
+    if request.plan_type not in [PlanType.PRO, PlanType.EXPERT]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Plan type must be either 'pro' or 'expert'"
+        )
+    
+    user_repo = UserRepository(db)
+    success = user_repo.update_plan_type(current_user.id, request.plan_type)
+    
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    return PlanUpdateResponse(
+        message=f"Plan successfully updated to {request.plan_type.value}",
+        user_id=current_user.id,
+        new_plan_type=request.plan_type
+    )

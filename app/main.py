@@ -5,7 +5,7 @@ from fastapi.openapi.utils import get_openapi
 import logging
 
 from app.api.v1.ai_router import router as ai_router
-from app.api.v1.auth import router as auth_router
+from app.api.v1.auth_router import router as auth_router
 from app.services.database_service import DatabaseService
 from app.core.config import settings
 

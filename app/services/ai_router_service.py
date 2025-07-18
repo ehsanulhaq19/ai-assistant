@@ -24,16 +24,16 @@ class AIRouterService:
         complexity = self.openai_service.get_query_complexity(query)
         is_code, is_creative = await self.openai_service.classify_query_type(query)
         
-        if complexity == "simple":
-            return "gpt-4o-mini", self.openai_service
-        elif is_code:
+        if is_code:
             return "gpt-4o", self.openai_service
         elif is_creative:
             return "claude-3-5-sonnet-20241022", self.claude_service
+        elif complexity == "simple":
+            return "gpt-4o-mini", self.openai_service
         elif complexity == "complex":
             return "claude-3-5-sonnet-20241022", self.claude_service
         else:
-            return "gpt-4o", self.openai_service
+            return "gpt-4o-mini", self.openai_service
     
     async def execute_query(
         self, 

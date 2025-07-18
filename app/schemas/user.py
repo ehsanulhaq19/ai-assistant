@@ -33,4 +33,12 @@ class TokenResponse(BaseModel):
     user_id: int = None
 
 class LogoutResponse(BaseModel):
-    message: str 
+    message: str
+
+class PlanUpdateRequest(BaseModel):
+    plan_type: PlanType
+
+class PlanUpdateResponse(BaseModel):
+    message: str
+    user_id: int
+    new_plan_type: PlanType 

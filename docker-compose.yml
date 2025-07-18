@@ -35,6 +35,17 @@ services:
       - "${PORT}:8000"
     env_file:
       - .env
+    volumes:
+      # Mount the current directory to enable hot reload
+      - .:/app
+      # Exclude unnecessary directories from watching
+      - /app/__pycache__
+      - /app/.pytest_cache
+      - /app/.git
+      - /app/node_modules
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
     depends_on:
       - mysql
       - redis

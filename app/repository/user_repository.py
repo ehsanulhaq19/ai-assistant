@@ -10,6 +10,9 @@ class UserRepository:
     def get_by_id(self, user_id: int) -> Optional[User]:
         return self.db.query(User).filter(User.id == user_id).first()
     
+    def get_by_id_and_session_id(self, user_id: int, session_id: str) -> Optional[User]:
+        return self.db.query(User).filter(User.id == user_id, User.session_id == session_id).first()
+    
     def get_by_email(self, email: str) -> Optional[User]:
         return self.db.query(User).filter(User.email == email).first()
     
@@ -88,4 +91,12 @@ class UserRepository:
         return self.get_users_by_plan(PlanType.PRO)
     
     def get_expert_users(self) -> List[User]:
-        return self.get_users_by_plan(PlanType.EXPERT) 
+        return self.get_users_by_plan(PlanType.EXPERT)
+    
+    def update_plan_type(self, user_id: int, plan_type: PlanType) -> bool:
+        user = self.get_by_id(user_id)
+        if user:
+            user.plan_type = plan_type
+            self.db.commit()
+            return True
+        return False 
