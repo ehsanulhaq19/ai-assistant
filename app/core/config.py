@@ -4,6 +4,12 @@ from typing import Optional
 
 class Settings:
     DATABASE_URL: str = config("DATABASE_URL", default="mysql://root:password@localhost:3306/vexacore_ai")
+    MYSQL_ROOT_PASSWORD: str = config("MYSQL_ROOT_PASSWORD", default="rootpassword")
+    MYSQL_DATABASE: str = config("MYSQL_DATABASE", default="vexacore_ai")
+    MYSQL_USER: str = config("MYSQL_USER", default="vexacore")
+    MYSQL_PASSWORD: str = config("MYSQL_PASSWORD", default="vexacorepass")
+    MYSQL_HOST: str = config("MYSQL_HOST", default="localhost")
+    MYSQL_PORT: int = config("MYSQL_PORT", default=3306, cast=int)
     
     REDIS_URL: str = config("REDIS_URL", default="redis://localhost:6379/0")
     
